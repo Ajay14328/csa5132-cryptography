@@ -1,19 +1,37 @@
 #include <stdio.h>
-int main() 
-{
-    char text[100];
-    int key,i;
-    printf("Enter plaintext: ");
-    fgets(text, sizeof(text), stdin);
-    printf("Enter key: ");
-    scanf("%d", &key);
-    for (i = 0; text[i] != '\0'; i++) 
-	{
-        if ((text[i] >= 'A' && text[i] <= 'Z') || (text[i] >= 'a' && text[i] <= 'z')) 
-		{
-            char base = (text[i] >= 'A' && text[i] <= 'Z') ? 'A' : 'a';
-            text[i] = (text[i] - base + key) % 26 + base;
+#include <ctype.h>
+#include <string.h>
+
+void encrypt(char *plaintext, char *ciphertext) {
+    int i;
+    char *key = "QWERTYUIOPASDFGHJKLZXCVBNM";
+
+    for (i = 0; plaintext[i] != '\0'; i++) {
+        if (isalpha(plaintext[i])) {
+            if (islower(plaintext[i]))
+                ciphertext[i] = tolower(key[plaintext[i] - 'a']);
+            else
+                ciphertext[i] = key[plaintext[i] - 'A'];
+        } else {
+            ciphertext[i] = plaintext[i];
         }
     }
-    printf("Encrypted text: %s", text);
+    ciphertext[i] = '\0'; 
+}
+
+int main() {
+    char plaintext[1000];
+    char ciphertext[1000];
+
+    printf("Enter the plaintext: ");
+    fgets(plaintext, sizeof(plaintext), stdin);
+    
+    if (plaintext[strlen(plaintext) - 1] == '\n')
+        plaintext[strlen(plaintext) - 1] = '\0';
+
+    encrypt(plaintext, ciphertext);
+
+    printf("Encrypted text: %s\n", ciphertext);
+
+    return 0;
 }
